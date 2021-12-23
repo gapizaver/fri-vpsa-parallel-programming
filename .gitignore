@@ -1,0 +1,8 @@
+*.out
+vpsacl primer
+primeri-kode-OpenCL
+FreeImage.h
+*.so.3
+*.png
+opencl_fractal
+test-images
