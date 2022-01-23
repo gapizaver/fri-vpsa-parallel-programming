@@ -112,9 +112,6 @@ int main(int argc, char *argv[]) {
                 n[j] = 1;
             }
 
-            if (j == 0) 
-                printf("j:%d centriod1 rgb: %d %d %d\n", j, (int)centroidi[j][0], (int)centroidi[j][1], (int)centroidi[j][2]);
-
             // nova vrednost centrioda je dobljeno povprečje
             centroidi[j][0] = sum[j][0] / n[j];
             centroidi[j][1] = sum[j][1] / n[j];
