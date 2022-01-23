@@ -8,7 +8,7 @@
 
 // število barv
 #define NUM_COLORS 128
-#define NUM_ITERATIONS 10
+#define NUM_ITERATIONS 50
 
 int main(int argc, char *argv[]) {
     if (argc != 2) {
