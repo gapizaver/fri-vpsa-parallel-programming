@@ -8,7 +8,7 @@
 
 // število barv
 #define NUM_COLORS 128
-#define NUM_ITERATIONS 50
+#define NUM_ITERATIONS 10
 
 int main(int argc, char *argv[]) {
     if (argc != 2) {
@@ -46,12 +46,23 @@ int main(int argc, char *argv[]) {
     unsigned char centroidi[NUM_COLORS][3];
     // tabela c
     int c[width*height];
+    // vsote pikslov v gruči
+    int sum[NUM_COLORS][3];
+    // število pikslov v gručah (za računanje povprečja m);
+    int n[NUM_COLORS];
+
+    // init vrednosti
     for (size_t i = 0; i < NUM_COLORS; i++) {
         // pridobi naključni vzorec (njegov index)
         int r = (rand() % (height*width)) * 4;
         centroidi[i][0] = image[r];
         centroidi[i][1] = image[r+1];
         centroidi[i][2] = image[r+2];
+        // init vsoto na 0
+        sum[i][0] = 0;
+        sum[i][1] = 0;
+        sum[i][2] = 0;
+        n[i] = 0;
     }
 
     for (size_t i = 0; i < NUM_ITERATIONS; i++) {
@@ -79,44 +90,39 @@ int main(int argc, char *argv[]) {
                 }
             }
 
-            // nastavi indeks centrioda v tabelo c
+            // nastavi indeks centrioda v tabelo c (dodaj piksel v gručo)
             c[j] = min_i;
+            // povečaj vsoto pikslov v gruči
+            sum[min_i][0] += r;
+            sum[min_i][1] += g;
+            sum[min_i][2] += b;
+            n[min_i]++;
         }
 
+        
         // pojdi čez vse centroide
         for (size_t j = 0; j < NUM_COLORS; j++) {
             // izračunaj povrečje m vseh xi, kjer ci == j
-            int sum[3] = {0, 0, 0};         // r, g, b
-            int n = 0;                      // število elementov v vsoti
-
-            // seštej vsoto elementov z indeksom centroida
-            for (size_t k = 0; k < width*height; k++) {
-                if (c[k] == j) {
-                    sum[0] += image[4*k];
-                    sum[1] += image[4*k+1];
-                    sum[2] += image[4*k+2];
-                    n++;
-                }
-            }
-
             // če število elementov v gruči je 0 ji dodaj naključni vzorec
-            if (n == 0) {
+            if (n[j] == 0) {
                 int r = (rand() % (height*width)) * 4;
-                sum[0] = image[r];
-                sum[1] = image[r+1];
-                sum[2] = image[r+2];
-                n = 1;
+                sum[j][0] = image[r];
+                sum[j][1] = image[r+1];
+                sum[j][2] = image[r+2];
+                n[j] = 1;
             }
 
             if (j == 0) 
                 printf("j:%d centriod1 rgb: %d %d %d\n", j, (int)centroidi[j][0], (int)centroidi[j][1], (int)centroidi[j][2]);
 
             // nova vrednost centrioda je dobljeno povprečje
-            centroidi[j][0] = sum[0] / n;
-            centroidi[j][1] = sum[1] / n;
-            centroidi[j][2] = sum[2] / n;
+            centroidi[j][0] = sum[j][0] / n[j];
+            centroidi[j][1] = sum[j][1] / n[j];
+            centroidi[j][2] = sum[j][2] / n[j];
             
         }
+
+        // sprintaj zaporedno številko iteracije za spremljanje teka programa
         printf("iteracija %d\n", i);
     }
 
